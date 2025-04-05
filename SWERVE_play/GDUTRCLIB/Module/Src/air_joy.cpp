@@ -74,6 +74,7 @@ void AirJoy::data_update(uint16_t GPIO_Pin, uint16_t GPIO_EXTI_USED_PIN)
 }
 
 
+int test=0;
 /**
  * @brief GPIO 的串口回调函数
  * 
@@ -81,6 +82,7 @@ void AirJoy::data_update(uint16_t GPIO_Pin, uint16_t GPIO_EXTI_USED_PIN)
  */
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
+	test++;
     air_joy.data_update(GPIO_Pin,GPIO_PIN_7);
 }
 

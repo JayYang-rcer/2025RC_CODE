@@ -54,6 +54,7 @@ motor_cpp\fsm_joy.o: ../Task/User/Inc/chassis_task.h
 motor_cpp\fsm_joy.o: ../Task/Comm/Inc/data_pool.h
 motor_cpp\fsm_joy.o: ../GDUTRCLIB/BSP/Inc/drive_uart.h
 motor_cpp\fsm_joy.o: ../Core/Inc/usart.h
+motor_cpp\fsm_joy.o: ../GDUTRCLIB/Module/Inc/chassis_swerve.h
 motor_cpp\fsm_joy.o: ../GDUTRCLIB/Module/Inc/chassis_base.h
 motor_cpp\fsm_joy.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\math.h
 motor_cpp\fsm_joy.o: ../GDUTRCLIB/Components/Inc/pid.h
@@ -82,3 +83,4 @@ motor_cpp\fsm_joy.o: ../Task/Comm/Inc/service_communication.h
 motor_cpp\fsm_joy.o: ../Task/Comm/Inc/service_config.h
 motor_cpp\fsm_joy.o: ../Task/Comm/Inc/user_debug.h
 motor_cpp\fsm_joy.o: ../GDUTRCLIB/Components/Inc/motor.h
+motor_cpp\fsm_joy.o: ../GDUTRCLIB/Module/Inc/chassis_omni.h

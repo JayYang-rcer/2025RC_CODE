@@ -80,5 +80,7 @@ motor_cpp\service_config.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
 motor_cpp\service_config.o: ../GDUTRCLIB/Module/Inc/air_joy.h
 motor_cpp\service_config.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
 motor_cpp\service_config.o: ../Task/User/Inc/chassis_task.h
+motor_cpp\service_config.o: ../GDUTRCLIB/Module/Inc/chassis_swerve.h
 motor_cpp\service_config.o: ../GDUTRCLIB/Module/Inc/chassis_base.h
 motor_cpp\service_config.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\math.h
+motor_cpp\service_config.o: ../GDUTRCLIB/Module/Inc/chassis_omni.h

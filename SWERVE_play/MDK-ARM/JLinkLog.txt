@@ -1,0 +1,73 @@
+T63AC 000:005.584   SEGGER J-Link V7.82 Log File
+T63AC 000:005.882   DLL Compiled: Oct 13 2022 13:32:51
+T63AC 000:005.890   Logging started @ 2025-04-05 09:14
+T63AC 000:005.897 - 5.901ms
+T63AC 000:005.912 JLINK_SetWarnOutHandler(...)
+T63AC 000:005.921 - 0.012ms
+T63AC 000:005.930 JLINK_OpenEx(...)
+T63AC 000:008.804   Firmware: J-Link V9 compiled Dec  8 2023 20:16:22
+T63AC 000:009.364   Firmware: J-Link V9 compiled Dec  8 2023 20:16:22
+T63AC 000:009.579   Decompressing FW timestamp took 165 us
+T63AC 000:016.195   Hardware: V9.70
+T63AC 000:016.231   S/N: 602717981
+T63AC 000:016.241   OEM: SEGGER
+T63AC 000:016.250   Feature(s): GDB, RDI, FlashBP, FlashDL, JFlash
+T63AC 000:018.104   TELNET listener socket opened on port 19021
+T63AC 000:018.357   WEBSRV WEBSRV_Init(): Starting webserver thread(s)
+T63AC 000:018.602   WEBSRV Webserver running on local port 19080
+T63AC 000:039.142 - 33.238ms returns "O.K."
+T63AC 000:039.238 JLINK_GetEmuCaps()
+T63AC 000:039.251 - 0.015ms returns 0xB9FF7BBF
+T63AC 000:039.264 JLINK_TIF_GetAvailable(...)
+T63AC 000:039.492 - 0.232ms
+T63AC 000:039.502 JLINK_SetErrorOutHandler(...)
+T63AC 000:039.506 - 0.005ms
+T63AC 000:039.522 JLINK_ExecCommand("ProjectFile = "F:\2025RC_CODE\SWERVE_play\MDK-ARM\JLinkSettings.ini"", ...). 
+T63AC 000:047.408   Ref file found at: C:\Keil_v5\ARM\Segger\JLinkDevices.ref
+T63AC 000:047.499   REF file references invalid XML file: C:\Users\28076\Desktop\SEGGER\jlink\JLinkDevices.xml
+T63AC 000:047.591 - 8.071ms returns 0x00
+T63AC 000:049.400 JLINK_ExecCommand("Device = STM32F407ZG", ...). 
+T63AC 000:051.213   Device "STM32F407ZG" selected.
+T63AC 000:051.446 - 2.035ms returns 0x00
+T63AC 000:051.455 JLINK_ExecCommand("DisableConnectionTimeout", ...). 
+T63AC 000:051.461 - 0.002ms returns 0x01
+T63AC 000:051.466 JLINK_GetHardwareVersion()
+T63AC 000:051.470 - 0.005ms returns 97000
+T63AC 000:051.478 JLINK_GetDLLVersion()
+T63AC 000:051.481 - 0.005ms returns 78200
+T63AC 000:051.486 JLINK_GetOEMString(...)
+T63AC 000:051.491 JLINK_GetFirmwareString(...)
+T63AC 000:051.494 - 0.005ms
+T63AC 000:055.175 JLINK_GetDLLVersion()
+T63AC 000:055.184 - 0.011ms returns 78200
+T63AC 000:055.190 JLINK_GetCompileDateTime()
+T63AC 000:055.193 - 0.005ms
+T63AC 000:057.175 JLINK_GetFirmwareString(...)
+T63AC 000:057.197 - 0.024ms
+T63AC 000:058.922 JLINK_GetHardwareVersion()
+T63AC 000:058.933 - 0.012ms returns 97000
+T63AC 000:060.180 JLINK_GetSN()
+T63AC 000:060.190 - 0.011ms returns 602717981
+T63AC 000:061.397 JLINK_GetOEMString(...)
+T63AC 000:063.794 JLINK_TIF_Select(JLINKARM_TIF_SWD)
+T63AC 000:064.729 - 0.942ms returns 0x00
+T63AC 000:064.746 JLINK_HasError()
+T63AC 000:064.857 JLINK_SetSpeed(5000)
+T63AC 000:065.051 - 0.201ms
+T63AC 000:065.064 JLINK_GetId()
+T63AC 000:067.916   InitTarget() start
+T63AC 000:067.954    J-Link Script File: Executing InitTarget()
+T63AC 000:171.572   Can not attach to CPU. Trying connect under reset.
+T63AC 000:329.360   Connecting to CPU via connect under reset failed.
+T63AC 000:382.809   InitTarget() end
+T63AC 000:386.022   Connect failed. Resetting via Reset pin and trying again.
+T63AC 000:451.429   InitTarget() start
+T63AC 000:451.462    J-Link Script File: Executing InitTarget()
+T63AC 000:557.047   Can not attach to CPU. Trying connect under reset.
+T63AC 000:712.843   Connecting to CPU via connect under reset failed.
+T63AC 000:769.652   InitTarget() end
+T63AC 000:769.688 - 704.628ms returns 0x00000000
+T63AC 002:498.420 JLINK_Close()
+T63AC 002:524.888 - 26.491ms
+T63AC 002:524.917   
+T63AC 002:524.924   Closed

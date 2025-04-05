@@ -8,14 +8,9 @@
  */
 #include "service_config.h"
 #include "chassis_task.h"
+
 #define USE_SWERVE_CHASSIS 0 
 
-Motor_GM6020 RudderMotor[4] = {Motor_GM6020(1), Motor_GM6020(2), Motor_GM6020(3), Motor_GM6020(4)};
-VESC WheelMotor[4] = {VESC(1), VESC(2), VESC(3), VESC(4)};
-
-#if USE_SWERVE_CHASSIS  
-Swerve_Chassis chassis(0.055,0,0.321,4);
-#endif
 
 void System_Resource_Init(void)
 {

@@ -80,3 +80,8 @@ motor_cpp\service_communication.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
 motor_cpp\service_communication.o: ../GDUTRCLIB/Components/Inc/motor.h
 motor_cpp\service_communication.o: ../Task/Comm/Inc/user_debug.h
 motor_cpp\service_communication.o: ../GDUTRCLIB/Components/Inc/serial_tool.h
+motor_cpp\service_communication.o: ../Task/User/Inc/chassis_task.h
+motor_cpp\service_communication.o: ../GDUTRCLIB/Module/Inc/chassis_swerve.h
+motor_cpp\service_communication.o: ../GDUTRCLIB/Module/Inc/chassis_base.h
+motor_cpp\service_communication.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\math.h
+motor_cpp\service_communication.o: ../GDUTRCLIB/Module/Inc/chassis_omni.h

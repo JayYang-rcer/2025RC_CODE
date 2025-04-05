@@ -13,7 +13,8 @@
 #include "pid.h"
 #include "motor.h"
 #include "serial_tool.h"
-
+#include "service_config.h"
+#include "chassis_task.h"
 
 void CAN1_Send_Task(void *pvParameters)
 {
@@ -77,36 +78,17 @@ void CAN1_RxCallBack(CAN_RxBuffer *RxBuffer)
     {
         switch (RxBuffer->header.StdId)
         {   
-            case 0x02:
-            {
-                DM43.update(RxBuffer->data);
+            case 0x201:
+                chassis.WheelMotor[0].update(RxBuffer->data);
                 break;
-            }
 
-            case 0x205:
-            {
-                RudderMotor[0].update(RxBuffer->data);
-                can_flag++;
+            case 0x202:
+                chassis.WheelMotor[1].update(RxBuffer->data);
                 break;
-            }
-
-            case 0x206:
-            {
-                RudderMotor[1].update(RxBuffer->data);
+            
+            case 0x203:
+                chassis.WheelMotor[2].update(RxBuffer->data);
                 break;
-            }
-
-            case 0x207:
-            {
-                RudderMotor[2].update(RxBuffer->data);
-                break;
-            }
-
-            case 0x208:
-            {
-                RudderMotor[3].update(RxBuffer->data);
-                break;
-            }
         }
     }
 }
@@ -116,10 +98,7 @@ void CAN2_RxCallBack(CAN_RxBuffer *RxBuffer)
 {
     if(RxBuffer->header.IDE==CAN_ID_EXT)
     {   
-        WheelMotor[0].update_vesc(RxBuffer);
-        WheelMotor[1].update_vesc(RxBuffer);
-        WheelMotor[2].update_vesc(RxBuffer);
-        WheelMotor[3].update_vesc(RxBuffer);
+     
     }
 }
 

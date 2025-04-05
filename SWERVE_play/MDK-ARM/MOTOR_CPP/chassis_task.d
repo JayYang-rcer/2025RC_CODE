@@ -48,6 +48,7 @@ motor_cpp\chassis_task.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/tas
 motor_cpp\chassis_task.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/list.h
 motor_cpp\chassis_task.o: ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os.h
 motor_cpp\chassis_task.o: ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os2.h
+motor_cpp\chassis_task.o: ../GDUTRCLIB/Module/Inc/chassis_swerve.h
 motor_cpp\chassis_task.o: ../GDUTRCLIB/Module/Inc/chassis_base.h
 motor_cpp\chassis_task.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\math.h
 motor_cpp\chassis_task.o: ../GDUTRCLIB/Components/Inc/pid.h
@@ -82,3 +83,4 @@ motor_cpp\chassis_task.o: ../Task/Comm/Inc/user_debug.h
 motor_cpp\chassis_task.o: ../GDUTRCLIB/Components/Inc/motor.h
 motor_cpp\chassis_task.o: ../GDUTRCLIB/Module/Inc/air_joy.h
 motor_cpp\chassis_task.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
+motor_cpp\chassis_task.o: ../GDUTRCLIB/Module/Inc/chassis_omni.h

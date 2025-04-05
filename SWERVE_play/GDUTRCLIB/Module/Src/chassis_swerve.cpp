@@ -15,7 +15,6 @@
 #include "chassis_swerve.h"
 
 SystemTick_Fun Chassis_Base::get_systemTick = NULL;
-
 template <typename Type>
 Type ABS(Type a)
 {
@@ -33,77 +32,58 @@ Type ABS(Type a)
  */
 void Swerve_Chassis::Control(Robot_Twist_t cmd_vel)
 {
-    static int32_t last_wheel_vel[4]={0};   //上一时刻给轮子的速度赋值
+    static int32_t last_target_wheel_vel[4]={0};   //上一时刻给轮子的速度赋值
     static int32_t last_wheelmotor_speed[4]={0};    //上一时刻轮子的实际转速
     update_timeStamp();
 
-    Reset();
     for(int i=0; i<4; i++)
     {
-        if(chassis_is_init==true&&Chassis_Safety_Check(25000)==true)
+        if(Chassis_Safety_Check(25000)==true)
         {
             //底盘速度限幅
             cmd_vel_.linear.x = cmd_vel.linear.x>Speed_Max.linear.x?Speed_Max.linear.x:cmd_vel.linear.x;
             cmd_vel_.linear.y = cmd_vel.linear.y>Speed_Max.linear.y?Speed_Max.linear.y:cmd_vel.linear.y;
             cmd_vel_.angular.z = cmd_vel.angular.z>Speed_Max.angular.z?Speed_Max.angular.z:cmd_vel.angular.z;
             
-            
-            //底盘模式选择，可能没太大用处
-            switch (cmd_vel.chassis_mode)
-            {
-                case X_MOVE:
-                    X_Velocity_Calculate(cmd_vel_,&swerve[i]);
-                    break;
-
-                case Y_MOVE:
-                    Y_Velocity_Calculate(cmd_vel_,&swerve[i]);
-                    break;
-
-                case NORMAL:
-                    Velocity_Calculate(cmd_vel_,&swerve[i]);
-                    break;
-
-                default:
-                    break;
-            }
+            Velocity_Calculate(cmd_vel_,&swerve[i]);
 
             //使用加速度控制底盘速度,
             #if USE_VEL_ACCEL
-            if(swerve[i].wheel_vel > 0 && swerve[i].wheel_vel >= last_wheel_vel[i])
-                swerve[i].wheel_vel = last_wheel_vel[i] + accel_vel*dt*ChassisVel_Trans_MotorRPM(Wheel_Radius, 21);
-            else if (swerve[i].wheel_vel < 0 && swerve[i].wheel_vel <= last_wheel_vel[i])
-                swerve[i].wheel_vel = last_wheel_vel[i] - accel_vel*dt*ChassisVel_Trans_MotorRPM(Wheel_Radius, 21);
+            if(swerve[i].wheel_vel > 0 && swerve[i].wheel_vel >= last_target_wheel_vel[i])
+                swerve[i].wheel_vel = last_target_wheel_vel[i] + accel_vel*dt*ChassisVel_Trans_MotorRPM(Wheel_Radius, 21);
+            else if (swerve[i].wheel_vel < 0 && swerve[i].wheel_vel <= last_target_wheel_vel[i])
+                swerve[i].wheel_vel = last_target_wheel_vel[i] - accel_vel*dt*ChassisVel_Trans_MotorRPM(Wheel_Radius, 21);
             else
             {}
 
-            last_wheel_vel[i] = swerve[i].wheel_vel;
+            last_target_wheel_vel[i] = swerve[i].wheel_vel;
             #endif      
 
             //在底盘运动速度比较低时，才能进行后退。防止反冲电流过大
-            if(last_wheelmotor_speed[i]*swerve[i].wheel_vel<0 && ABS(WheelMotor[i].get_speed())-1000>=0)
+            if(last_wheelmotor_speed[i]*swerve[i].wheel_vel<0 && ABS(SwerveWheelMotor[i].get_speed())-1000>=0)
             {
-                WheelMotor[i].Mode = SET_eRPM;
-                WheelMotor[i].Out = 0;
+                SwerveWheelMotor[i].Mode = SET_eRPM;
+                SwerveWheelMotor[i].Out = 0;
             }
             else
             {
-                WheelMotor[i].Mode = SET_eRPM;
-                WheelMotor[i].Out = swerve[i].wheel_vel;
+                SwerveWheelMotor[i].Mode = SET_eRPM;
+                SwerveWheelMotor[i].Out = swerve[i].wheel_vel;
             }
 
             //电机速度赋值
-            PID_Rudder_Speed[i].current = RudderMotor[i].get_speed();
-            PID_Rudder_Pos[i].current = RudderMotor[i].get_angle();
+            PID_Rudder_Speed[i].current = SwerveRudderMotor[i].get_speed();
+            PID_Rudder_Pos[i].current = SwerveRudderMotor[i].get_angle();
             PID_Rudder_Pos[i].target = swerve[i].target_angle;
             PID_Rudder_Speed[i].target = PID_Rudder_Pos[i].Adjust();
-            RudderMotor[i].Out = PID_Rudder_Speed[i].Adjust();
-            last_wheelmotor_speed[i] = WheelMotor[i].get_speed();
+            SwerveRudderMotor[i].Out = PID_Rudder_Speed[i].Adjust();
+            last_wheelmotor_speed[i] = SwerveWheelMotor[i].get_speed();
         }
 
         if(Chassis_Safety_Check(25000)==false)
         {
-            WheelMotor[i].Mode = SET_CURRENT;
-            WheelMotor[i].Out = 0;
+            SwerveWheelMotor[i].Mode = SET_CURRENT;
+            SwerveWheelMotor[i].Out = 0;
         }
     }
     
@@ -117,26 +97,26 @@ void Swerve_Chassis::Control(Robot_Twist_t cmd_vel)
  */
 int Swerve_Chassis::Motor_Control(void)
 {
-    Motor_SendMsgs(&hcan1, RudderMotor);
+    Motor_SendMsgs(&hcan1, SwerveRudderMotor);
 
     //由于担心是一个任务同时发送太多can帧，防止阻塞严重，把can帧速度拉低。
     //方法比较简陋，希望后来者可以改善这个问题并做好封装
 	static int send_flag=0;
     if(send_flag<1)
     {
-        Motor_SendMsgs(&hcan2, WheelMotor[0]);
+        Motor_SendMsgs(&hcan2, SwerveWheelMotor[0]);
     }
     else if (send_flag>=1&&send_flag<2)
     {
-        Motor_SendMsgs(&hcan2, WheelMotor[1]);
+        Motor_SendMsgs(&hcan2, SwerveWheelMotor[1]);
     }
     else if (send_flag>=2&&send_flag<3)
     {
-        Motor_SendMsgs(&hcan2, WheelMotor[2]);
+        Motor_SendMsgs(&hcan2, SwerveWheelMotor[2]);
     }
     else if (send_flag>=3&&send_flag<4)
     {
-        Motor_SendMsgs(&hcan2, WheelMotor[3]);
+        Motor_SendMsgs(&hcan2, SwerveWheelMotor[3]);
     }
     else
     {
@@ -183,8 +163,8 @@ void Swerve_Chassis::Velocity_Calculate(Robot_Twist_t cmd_vel, Swerve_t *swerve)
     if(ABS(cmd_vel.linear.x)-0.02f<=0&&ABS(cmd_vel.linear.y)-0.02f<=0&&ABS(cmd_vel.angular.z)-0.02f<=0)
     {
         //设置刹车电流   
-        WheelMotor[swerve->num-1].Mode = SET_BRAKE;
-        WheelMotor[swerve->num-1].Out = 10;
+        SwerveWheelMotor[swerve->num-1].Mode = SET_BRAKE;
+        SwerveWheelMotor[swerve->num-1].Out = 10;
 
         //四个轮子均小于100erpm时，超过2s锁住底盘
         Chassis_Lock(swerve);
@@ -193,46 +173,6 @@ void Swerve_Chassis::Velocity_Calculate(Robot_Twist_t cmd_vel, Swerve_t *swerve)
     //底盘舵向的劣弧计算
     RudderAngle_Adjust(swerve); 
     swerve->now_angle = swerve->target_angle;
-}
-
-
-/**
- * @brief 把底盘锁死在一个方向，但是能否走的直。取决于舵向精度
- * 
- * @param cmd_vel 
- * @param swerve 
- */
-void Swerve_Chassis::X_Velocity_Calculate(Robot_Twist_t cmd_vel, Swerve_t *swerve)
-{
-    swerve->wheel_vel = cmd_vel.linear.x * ChassisVel_Trans_MotorRPM(Wheel_Radius, 21);
-
-    if(cmd_vel.linear.x==0)
-    {
-        Chassis_Lock(swerve);
-    }
-
-    swerve->target_angle = 0;
-    RudderAngle_Adjust(swerve); 
-}
-
-
-/**
- * @brief 把底盘锁死在一个方向，但是能否走的直。取决于舵向精度
- * 
- * @param cmd_vel 
- * @param swerve 
- */
-void Swerve_Chassis::Y_Velocity_Calculate(Robot_Twist_t cmd_vel, Swerve_t *swerve)
-{
-    swerve->wheel_vel = cmd_vel.linear.y * ChassisVel_Trans_MotorRPM(Wheel_Radius, 21);
-
-    if(cmd_vel.linear.y==0)
-    {
-        Chassis_Lock(swerve);
-    }
-
-    swerve->target_angle = 90;
-    RudderAngle_Adjust(swerve); 
 }
 
 
@@ -267,7 +207,7 @@ void Swerve_Chassis::RudderAngle_Adjust(Swerve_t *swerve)
 
 
     swerve->target_angle = swerve->target_angle + N*360.0f;
-    swerve->real_angle = RudderMotor[swerve->num-1].get_angle() - N*360.0f;  //未经过劣弧计算的实际角度
+    swerve->real_angle = SwerveRudderMotor[swerve->num-1].get_angle() - N*360.0f;  //未经过劣弧计算的实际角度
 
     error = abs(swerve->target_angle - swerve->now_angle);
 
@@ -299,85 +239,6 @@ void Swerve_Chassis::RudderAngle_Adjust(Swerve_t *swerve)
 
 
 /**
- * @brief Chassis status reset
- */
-void Swerve_Chassis::Reset(void)
-{
-    static uint32_t real_time=0;
-    if(chassis_is_init==false&&reset_flag==2)
-    {
-        for(int i=0; i<4; i++)
-        {
-            Chassis_Lock(&swerve[i]);
-        }
-        reset_flag = 0;
-    }
-
-    if(reset_flag==0)
-    {
-        real_time = 0;
-        reset_flag = 1;
-    }
-
-    real_time += dt*1000;
-
-    if(real_time<1000)
-    {
-        for(int i=0; i<4; i++)
-        {
-            WheelMotor[i].Mode = SET_CURRENT;
-            WheelMotor[i].Out = 0;
-        }    
-    }
-    else if(real_time>=1000 && real_time<3000)
-    {
-        cmd_vel_.linear.x = 0;
-        cmd_vel_.linear.y = 0;
-        cmd_vel_.angular.z = 1;
-
-        for(int i=0; i<4; i++)
-        {
-            Velocity_Calculate(cmd_vel_, &swerve[i]);
-            WheelMotor[i].Mode = SET_eRPM;
-            WheelMotor[i].Out = swerve[i].wheel_vel;
-
-            //电机速度赋值
-            PID_Rudder_Speed[i].current = RudderMotor[i].get_speed();
-            PID_Rudder_Pos[i].current = RudderMotor[i].get_angle();
-            PID_Rudder_Pos[i].target = swerve[i].target_angle;
-            PID_Rudder_Speed[i].target = PID_Rudder_Pos[i].Adjust();
-            RudderMotor[i].Out = PID_Rudder_Speed[i].Adjust();
-        }
-    }
-    else if(real_time>=3000 && real_time<5000)
-    {
-        cmd_vel_.linear.x = 0;
-        cmd_vel_.linear.y = 0;
-        cmd_vel_.angular.z = -1;
-        
-        for(int i=0; i<4; i++)
-        {
-            Velocity_Calculate(cmd_vel_, &swerve[i]);
-            WheelMotor[i].Mode = SET_eRPM;
-            WheelMotor[i].Out = swerve[i].wheel_vel;
-
-            //电机速度赋值
-            PID_Rudder_Speed[i].current = RudderMotor[i].get_speed();
-            PID_Rudder_Pos[i].current = RudderMotor[i].get_angle();
-            PID_Rudder_Pos[i].target = swerve[i].target_angle;
-            PID_Rudder_Speed[i].target = PID_Rudder_Pos[i].Adjust();
-            RudderMotor[i].Out = PID_Rudder_Speed[i].Adjust();
-        }
-    }
-    else
-    {
-        chassis_is_init = true;
-        reset_flag=2;
-    }
-}
-
-
-/**
  * @brief 舵轮底盘安全检测，检测电机的最大电流是否超过设定值。电流值过大持续时间超过1s，蜂鸣器报警
  * 
  * @param Current_Max 
@@ -390,7 +251,7 @@ bool Swerve_Chassis::Chassis_Safety_Check(float Current_Max)
     static uint32_t start_time=0, now_time=0, real_time=0;
     for(int i=0; i<4; i++)
     {
-        if(WheelMotor[i].get_tarque() > Current_Max)
+        if(SwerveWheelMotor[i].get_tarque() > Current_Max)
         {
             
             if(beep_flag==0)
@@ -428,7 +289,7 @@ void Swerve_Chassis::Chassis_Lock(Swerve_t *swerve)
     static int reset_flag=0;
     static int32_t stop_start_time=0;
     
-    if(ABS(WheelMotor[swerve->num-1].get_speed())<100)
+    if(ABS(SwerveWheelMotor[swerve->num-1].get_speed())<100)
     {   
         if(reset_flag==0)
         {
@@ -476,109 +337,24 @@ void Swerve_Chassis::Chassis_Lock(Swerve_t *swerve)
 Robot_Twist_t Swerve_Chassis::Get_Robot_Speed(void)
 {
     Robot_Twist_t real_twist;
-    real_twist.linear.x = (WheelMotor[0].get_speed()*cos(swerve[0].real_angle*PI/180) + 
-                           WheelMotor[1].get_speed()*cos(swerve[1].real_angle*PI/180) + 
-                           WheelMotor[2].get_speed()*cos(swerve[2].real_angle*PI/180) + 
-                           WheelMotor[3].get_speed()*cos(swerve[3].real_angle*PI/180))/
+    real_twist.linear.x = (SwerveWheelMotor[0].get_speed()*cos(swerve[0].real_angle*PI/180) + 
+                           SwerveWheelMotor[1].get_speed()*cos(swerve[1].real_angle*PI/180) + 
+                           SwerveWheelMotor[2].get_speed()*cos(swerve[2].real_angle*PI/180) + 
+                           SwerveWheelMotor[3].get_speed()*cos(swerve[3].real_angle*PI/180))/
                            (4.0f * MotorRPM_Trans_ChassisVel(Wheel_Radius, 21));
 
-    real_twist.linear.y = (WheelMotor[0].get_speed()*sin(swerve[0].real_angle*PI/180) +
-                           WheelMotor[1].get_speed()*sin(swerve[1].real_angle*PI/180) +
-                           WheelMotor[2].get_speed()*sin(swerve[2].real_angle*PI/180) +
-                           WheelMotor[3].get_speed()*sin(swerve[3].real_angle*PI/180))/
+    real_twist.linear.y = (SwerveWheelMotor[0].get_speed()*sin(swerve[0].real_angle*PI/180) +
+                           SwerveWheelMotor[1].get_speed()*sin(swerve[1].real_angle*PI/180) +
+                           SwerveWheelMotor[2].get_speed()*sin(swerve[2].real_angle*PI/180) +
+                           SwerveWheelMotor[3].get_speed()*sin(swerve[3].real_angle*PI/180))/
                            (4.0f * MotorRPM_Trans_ChassisVel(Wheel_Radius, 21));
     
-    real_twist.angular.z = (WheelMotor[0].get_speed()*cos(swerve[0].real_angle*PI/180) + 
-                            WheelMotor[1].get_speed()*cos(swerve[1].real_angle*PI/180) - 
-                            WheelMotor[2].get_speed()*cos(swerve[2].real_angle*PI/180) - 
-                            WheelMotor[3].get_speed()*cos(swerve[3].real_angle*PI/180))/
+    real_twist.angular.z = (SwerveWheelMotor[0].get_speed()*cos(swerve[0].real_angle*PI/180) + 
+                            SwerveWheelMotor[1].get_speed()*cos(swerve[1].real_angle*PI/180) - 
+                            SwerveWheelMotor[2].get_speed()*cos(swerve[2].real_angle*PI/180) - 
+                            SwerveWheelMotor[3].get_speed()*cos(swerve[3].real_angle*PI/180))/
                             (4.0f*Chassis_Radius*COS * MotorRPM_Trans_ChassisVel(Wheel_Radius, 21));
     return real_twist;
 }
 
 
-/**
- * @brief 舵轮PID参数初始化
- * 
- * @param PID_Type 
- * @param Kp 
- * @param Ki 
- * @param Kd 
- * @param Integral_Max 积分限幅
- * @param OUT_Max 输出限幅
- */
-void Swerve_Chassis::Pid_Param_Init(CHASSIS_PID_E PID_Type, float Kp, float Ki, float Kd, float Integral_Max, float Out_Max, float DeadZone)
-{
-    switch(PID_Type)
-    {
-        case RUDDER_LEFT_FRONT_Speed_E:
-            PID_Rudder_Speed[0].PID_Param_Init(Kp, Ki, Kd, Integral_Max, Out_Max, DeadZone);
-            break;
-        case RUDDER_RIGHT_FRONT_Speed_E:
-            PID_Rudder_Speed[1].PID_Param_Init(Kp, Ki, Kd, Integral_Max, Out_Max, DeadZone);
-            break;
-        case RUDDER_LEFT_REAR_Speed_E:
-            PID_Rudder_Speed[2].PID_Param_Init(Kp, Ki, Kd, Integral_Max, Out_Max, DeadZone);
-            break;
-        case RUDDER_RIGHT_REAR_Speed_E:
-            PID_Rudder_Speed[3].PID_Param_Init(Kp, Ki, Kd, Integral_Max, Out_Max, DeadZone);
-            break;
-        case RUDDER_LEFT_FRONT_Pos_E:
-            PID_Rudder_Pos[0].PID_Param_Init(Kp, Ki, Kd, Integral_Max, Out_Max, DeadZone);
-            break;
-        case RUDDER_RIGHT_FRONT_Pos_E:
-            PID_Rudder_Pos[1].PID_Param_Init(Kp, Ki, Kd, Integral_Max, Out_Max, DeadZone);
-            break;
-        case RUDDER_LEFT_REAR_Pos_E:
-            PID_Rudder_Pos[2].PID_Param_Init(Kp, Ki, Kd, Integral_Max, Out_Max, DeadZone);
-            break;
-        case RUDDER_RIGHT_REAR_Pos_E:
-            PID_Rudder_Pos[3].PID_Param_Init(Kp, Ki, Kd, Integral_Max, Out_Max, DeadZone);
-            break;
-        default:
-            break;
-    }
-}
-
-
-/**
- * @brief 舵轮底盘PID模式初始化
- * 
- * @param PID_Type 
- * @param LowPass_error 误差低通过滤器系数
- * @param LowPass_d_err 不完全微分系数
- * @param D_of_Current 是否开启微分先行
- * @param Imcreatement_of_Out 是否使用增量式输出
- */
-void Swerve_Chassis::Pid_Mode_Init(CHASSIS_PID_E PID_Type, float LowPass_error, float LowPass_d_err, bool D_of_Current, bool Imcreatement_of_Out)
-{
-    switch(PID_Type)
-    {
-        case RUDDER_LEFT_FRONT_Pos_E:
-            PID_Rudder_Pos[0].PID_Mode_Init(LowPass_error, LowPass_d_err, D_of_Current, Imcreatement_of_Out);
-            break;
-        case RUDDER_RIGHT_FRONT_Pos_E:
-            PID_Rudder_Pos[1].PID_Mode_Init(LowPass_error, LowPass_d_err, D_of_Current, Imcreatement_of_Out);
-            break;
-        case RUDDER_LEFT_REAR_Pos_E:
-            PID_Rudder_Pos[2].PID_Mode_Init(LowPass_error, LowPass_d_err, D_of_Current, Imcreatement_of_Out);
-            break;
-        case RUDDER_RIGHT_REAR_Pos_E:
-            PID_Rudder_Pos[3].PID_Mode_Init(LowPass_error, LowPass_d_err, D_of_Current, Imcreatement_of_Out);
-            break;
-        case RUDDER_LEFT_FRONT_Speed_E:
-            PID_Rudder_Speed[0].PID_Mode_Init(LowPass_error, LowPass_d_err, D_of_Current, Imcreatement_of_Out);
-            break;
-        case RUDDER_RIGHT_FRONT_Speed_E:
-            PID_Rudder_Speed[1].PID_Mode_Init(LowPass_error, LowPass_d_err, D_of_Current, Imcreatement_of_Out);
-            break;
-        case RUDDER_LEFT_REAR_Speed_E:
-            PID_Rudder_Speed[2].PID_Mode_Init(LowPass_error, LowPass_d_err, D_of_Current, Imcreatement_of_Out);
-            break;
-        case RUDDER_RIGHT_REAR_Speed_E:
-            PID_Rudder_Speed[3].PID_Mode_Init(LowPass_error, LowPass_d_err, D_of_Current, Imcreatement_of_Out);
-            break;
-        default:
-            break;
-    }
-}

@@ -11,32 +11,20 @@
  */
 #include "chassis_omni.h"
 
-#if USE_THREE_OMNI_WHEEL
-Motor_C620 Moror[3] = {Motor_C620(1), Motor_C620(2), Motor_C620(3)};
-#endif
-#if USE_FOUR_OMNI_WHEEL
-Motor_C620 Motor[4] = {Motor_C620(1), Motor_C620(2), Motor_C620(3), Motor_C620(4)};
-#endif
-
 void Omni_Chassis::Control(Robot_Twist_t cmd_vel)
 {
-    
-#if USE_FOUR_OMNI_WHEEL||USE_THREE_OMNI_WHEEL
     Velocity_Calculate(cmd_vel);
     for(int i=0; i<wheel_num; i++)
     {
-        PID_Wheel[i].current = Motor[i].get_speed();
+        PID_Wheel[i].current = WheelMotor[i].get_speed();
         PID_Wheel[i].target = wheel[i].wheel_vel;
-        Motor[i].Out = PID_Wheel[i].Adjust();
+        WheelMotor[i].Out = PID_Wheel[i].Adjust();
     }
-#endif
 }
 
 void Omni_Chassis::Motor_Control(void)
 {
-#if USE_FOUR_OMNI_WHEEL||USE_THREE_OMNI_WHEEL
-    RM_Motor_SendMsgs(&hcan1, Motor);
-#endif
+    Motor_SendMsgs(&hcan1, WheelMotor);
 }
 
 void Omni_Chassis::Velocity_Calculate(Robot_Twist_t cmd_vel)
@@ -56,15 +44,6 @@ void Omni_Chassis::Velocity_Calculate(Robot_Twist_t cmd_vel)
     }
 }
 
-
-/**
- * @brief 底盘重置函数，根据自己的需求进行编写
- * 
- */
-void Omni_Chassis::Reset(void)
-{
-    
-}
 
 
 bool Omni_Chassis::Pid_Param_Init(int num, float Kp, float Ki, float Kd, float Integral_Max, float OUT_Max, float DeadZone)

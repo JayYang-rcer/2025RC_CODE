@@ -45,15 +45,14 @@ public:
         swerve[2].num = 3;
         swerve[3].num = 4;
     }
-
+    Motor_GM6020 SwerveRudderMotor[4] = {Motor_GM6020(1), Motor_GM6020(2), Motor_GM6020(3), Motor_GM6020(4)};
+    VESC SwerveWheelMotor[4] = {VESC(1), VESC(2), VESC(3), VESC(4)};
     float theta=99.26;  //底盘两对对角轮连线的夹角，用于解算轮子速度
     float accel_vel=0; //底盘加速度
     bool chassis_is_init = false;
     void Control(Robot_Twist_t cmd_vel);
     int Motor_Control(void);
     Robot_Twist_t Get_Robot_Speed(void);
-    void Pid_Param_Init(CHASSIS_PID_E PID_Type, float Kp, float Ki, float Kd, float Integral_Max, float Out_Max, float DeadZone);
-    void Pid_Mode_Init(CHASSIS_PID_E PID_Type, float LowPass_error, float LowPass_d_err, bool D_of_Current, bool Imcreatement_of_Out);
 
 private:
     int wheel_num = 0;
@@ -66,12 +65,9 @@ private:
     uint8_t reset_flag=2;
     uint8_t lock_flag=0;
     bool Chassis_Safety_Check(float Current_Max);
-    void Reset(void);
     void RudderAngle_Adjust(Swerve_t *swerve);
     void Chassis_Lock(Swerve_t *swerve);
     void Velocity_Calculate(Robot_Twist_t cmd_vel, Swerve_t *swerve);
-    void X_Velocity_Calculate(Robot_Twist_t cmd_vel, Swerve_t *swerve);
-    void Y_Velocity_Calculate(Robot_Twist_t cmd_vel, Swerve_t *swerve);
 
     PID PID_Rudder_Speed[4];
     PID PID_Rudder_Pos[4];

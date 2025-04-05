@@ -20,6 +20,7 @@ typedef struct Wheel_t    //used for mecanum chassis and omni chassis
 }Wheel_t;
 
 
+
 class Omni_Chassis : public Chassis_Base
 {
 public:
@@ -40,7 +41,7 @@ public:
 
     void Control(Robot_Twist_t cmd_vel);
     void Motor_Control(void);
-    void Reset(void);
+    Motor_C620 WheelMotor[3] = {Motor_C620(1),Motor_C620(2),Motor_C620(3)};
 private:
     PID PID_Wheel[4];
     Wheel_t wheel[4];
@@ -50,6 +51,7 @@ private:
     float Chassis_Radius = 0.641/2;
     float COS45=cos(PI/4),SIN45=sin(PI/4);
     float COS30=cos(PI/6),SIN30=sin(PI/6);
+    
     void Velocity_Calculate(Robot_Twist_t cmd_vel);
 };
 

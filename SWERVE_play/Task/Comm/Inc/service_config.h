@@ -12,6 +12,7 @@
 #include "air_joy.h"
 #include "motor.h"
 
+
 #define PriorityVeryLow       1
 #define PriorityLow           2
 #define PriorityBelowNormal   3
@@ -32,8 +33,6 @@ void motor_init(void);
 #ifdef  __cplusplus
 }
 
-extern Motor_GM6020 RudderMotor[4];
-extern VESC WheelMotor[4];
 #endif                                
 
 

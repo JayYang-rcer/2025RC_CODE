@@ -1057,6 +1057,21 @@
                 </FileArmAds>
               </FileOption>
             </File>
+            <File>
+              <FileName>pid.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\GDUTRCLIB\Components\Inc\pid.h</FilePath>
+            </File>
+            <File>
+              <FileName>motor.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\GDUTRCLIB\Components\Inc\motor.h</FilePath>
+            </File>
+            <File>
+              <FileName>tool.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\GDUTRCLIB\Components\Inc\tool.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

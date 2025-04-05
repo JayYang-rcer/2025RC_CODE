@@ -19,9 +19,6 @@
 #define Chassia_Port_SIZE 4
 #define Broadcast_Port_SIZE 2
 
-//全向轮底盘轮数
-#define USE_FOUR_OMNI_WHEEL 0
-#define USE_THREE_OMNI_WHEEL 0
 
 //舵轮底盘加速度开启
 #define USE_VEL_ACCEL 1
