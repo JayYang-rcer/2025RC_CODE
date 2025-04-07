@@ -12,17 +12,6 @@
 #include "air_joy.h"
 
 AirJoy air_joy;
-SystemTick_Fun AirJoy::get_systemTick = NULL;
-uint8_t AirJoy::getMicroTick_regist(uint32_t (*getTick_fun)(void))
-{
-    if(getTick_fun != NULL)
-    {
-        AirJoy::get_systemTick = getTick_fun;
-        return 1;
-    }
-    else 
-        return 0;
-}
 
 
 /**
@@ -74,7 +63,6 @@ void AirJoy::data_update(uint16_t GPIO_Pin, uint16_t GPIO_EXTI_USED_PIN)
 }
 
 
-int test=0;
 /**
  * @brief GPIO 的串口回调函数
  * 
@@ -82,7 +70,6 @@ int test=0;
  */
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
-	test++;
     air_joy.data_update(GPIO_Pin,GPIO_PIN_7);
 }
 

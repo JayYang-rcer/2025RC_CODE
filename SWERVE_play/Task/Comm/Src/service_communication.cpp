@@ -28,7 +28,11 @@ void CAN1_Send_Task(void *pvParameters)
             do{
                 free_can_mailbox = HAL_CAN_GetTxMailboxesFreeLevel(&hcan1);
             }while(free_can_mailbox == 0);
+#if USE_CAN1_STDID
             comm_can_transmit_stdid(&hcan1, CAN_TxMsg.id, CAN_TxMsg.data, CAN_TxMsg.len);
+#else
+            comm_can_transmit_extid(&hcan1, CAN_TxMsg.id, CAN_TxMsg.data, CAN_TxMsg.len);
+#endif
         }
     }
 }
@@ -46,7 +50,11 @@ void CAN2_Send_Task(void *pvParameters)
             do{
                 free_can_mailbox = HAL_CAN_GetTxMailboxesFreeLevel(&hcan2);
             }while(free_can_mailbox == 0);
+#if USE_CAN2_STDID
+            comm_can_transmit_stdid(&hcan2, CAN_TxMsg.id, CAN_TxMsg.data, CAN_TxMsg.len);
+#else
             comm_can_transmit_extid(&hcan2, CAN_TxMsg.id, CAN_TxMsg.data, CAN_TxMsg.len);
+#endif
         }
     }
 }
@@ -74,6 +82,7 @@ int can_flag=0;
 */
 void CAN1_RxCallBack(CAN_RxBuffer *RxBuffer)
 {
+#if USE_CAN1_STDID
     if(RxBuffer->header.IDE==CAN_ID_STD)
     {
         switch (RxBuffer->header.StdId)
@@ -89,17 +98,42 @@ void CAN1_RxCallBack(CAN_RxBuffer *RxBuffer)
             case 0x203:
                 chassis.WheelMotor[2].update(RxBuffer->data);
                 break;
+            
+            case 0x204:
+                break;
+
+            case 0x205:
+                break;
         }
     }
+#else
+    if(RxBuffer->header.IDE==CAN_ID_EXT)
+    {   
+        switch (RxBuffer->header.ExtId)
+        {   
+            
+        }
+    }
+#endif
 }
 
 
 void CAN2_RxCallBack(CAN_RxBuffer *RxBuffer)
 {
+#if USE_CAN2_STDID
+    if(RxBuffer->header.IDE==CAN_ID_STD)
+    {
+        switch (RxBuffer->header.StdId)
+        {   
+            
+        }
+    }
+#else
     if(RxBuffer->header.IDE==CAN_ID_EXT)
     {   
-     
+        
     }
+#endif
 }
 
 

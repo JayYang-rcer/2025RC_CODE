@@ -84,3 +84,4 @@ motor_cpp\chassis_task.o: ../GDUTRCLIB/Components/Inc/motor.h
 motor_cpp\chassis_task.o: ../GDUTRCLIB/Module/Inc/air_joy.h
 motor_cpp\chassis_task.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
 motor_cpp\chassis_task.o: ../GDUTRCLIB/Module/Inc/chassis_omni.h
+motor_cpp\chassis_task.o: ../GDUTRCLIB/Components/Inc/speed_plan.h

@@ -15,12 +15,10 @@ extern "C" {
 #ifdef __cplusplus
 }
 
-class Chassis_Base
+class Chassis_Base : public PidTimer
 {
 public:
-    Chassis_Base(float Wheel_Radius, float Wheel_Track, float Chassis_Radius,int wheel_num){}
-    static uint8_t getMicroTick_regist(uint32_t (*getTick_fun)(void));
-
+    Chassis_Base(float Wheel_Radius, float Chassis_Radius,int wheel_num, float accel_vel){}
     Robot_Twist_t Speed_Max={0};
 
     Robot_Twist_t RoboSpeed_To_WorldSpeed(Robot_Twist_t RoboSpeed, float YawAngle_Now)
@@ -36,7 +34,6 @@ public:
     }
 
 protected:
-    static SystemTick_Fun get_systemTick;
 
     template<typename Type> 
     void Constrain(Type *x, Type Min, Type Max) 
@@ -67,12 +64,8 @@ protected:
     {
         return (2*PI*Wheel_Radius/(60*gear_ratio));
     }
-
-    uint8_t update_timeStamp(void);
     
     Robot_Twist_t cmd_vel_={0};
-    float  dt;
-    uint32_t last_time;
 private:
     double TRANS_SIN,TRANS_COS;
 };

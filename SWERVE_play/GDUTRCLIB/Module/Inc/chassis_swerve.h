@@ -33,10 +33,10 @@ extern "C" {
 class Swerve_Chassis : public Chassis_Base
 {
 public:
-    Swerve_Chassis(float Wheel_Radius, float Wheel_Track, float Chassis_Radius,int wheel_num) : Chassis_Base(Wheel_Radius, Wheel_Track, Chassis_Radius,wheel_num)
+    Swerve_Chassis(float Wheel_Radius, float Chassis_Radius,int wheel_num, float accel_vel) : Chassis_Base(Wheel_Radius, Chassis_Radius,wheel_num,accel_vel)
     {
         this->Wheel_Radius = Wheel_Radius;
-        this->Wheel_Track = Wheel_Track;
+        this->accel_vel = accel_vel;
         this->Chassis_Radius = Chassis_Radius;
         this->wheel_num = wheel_num;
         this->cmd_vel_.chassis_mode = NORMAL;
@@ -48,7 +48,7 @@ public:
     Motor_GM6020 SwerveRudderMotor[4] = {Motor_GM6020(1), Motor_GM6020(2), Motor_GM6020(3), Motor_GM6020(4)};
     VESC SwerveWheelMotor[4] = {VESC(1), VESC(2), VESC(3), VESC(4)};
     float theta=99.26;  //底盘两对对角轮连线的夹角，用于解算轮子速度
-    float accel_vel=0; //底盘加速度
+    
     bool chassis_is_init = false;
     void Control(Robot_Twist_t cmd_vel);
     int Motor_Control(void);
@@ -58,7 +58,7 @@ private:
     int wheel_num = 0;
     Swerve_t swerve[4];
     float Wheel_Radius = 0.038;
-    float Wheel_Track = 0;
+    float accel_vel=0; //底盘加速度
     float Chassis_Radius = 0.641/2;
     float COS=cos(99.26/2),SIN=sin(99.26/2);
     int N=0;    //记录舵向转过的圈数

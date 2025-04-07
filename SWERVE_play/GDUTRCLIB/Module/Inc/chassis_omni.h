@@ -24,10 +24,10 @@ typedef struct Wheel_t    //used for mecanum chassis and omni chassis
 class Omni_Chassis : public Chassis_Base
 {
 public:
-    Omni_Chassis(float Wheel_Radius, float Wheel_Track, float Chassis_Radius,int wheel_num) : Chassis_Base(Wheel_Radius, Wheel_Track, Chassis_Radius, wheel_num)
+    Omni_Chassis(float Wheel_Radius, float Chassis_Radius,int wheel_num, float accel_vel) : Chassis_Base(Wheel_Radius, Chassis_Radius, wheel_num, accel_vel)
     {
         this->Wheel_Radius = Wheel_Radius;
-        this->Wheel_Track = Wheel_Track;
+        this->accel_vel = accel_vel;
         this->Chassis_Radius = Chassis_Radius;
         this->wheel_num = wheel_num;
         wheel[0].num = 1;
@@ -47,11 +47,12 @@ private:
     Wheel_t wheel[4];
     int wheel_num = 0;
     float Wheel_Radius = 0.152f/2;
-    float Wheel_Track = 0;
+    float accel_vel = 0;
     float Chassis_Radius = 0.641/2;
     float COS45=cos(PI/4),SIN45=sin(PI/4);
     float COS30=cos(PI/6),SIN30=sin(PI/6);
-    
+    float COS60=cos(PI/3),SIN60=sin(PI/3);
+    Robot_Twist_t cmd_vel_last={0};
     void Velocity_Calculate(Robot_Twist_t cmd_vel);
 };
 

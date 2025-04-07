@@ -13,8 +13,6 @@
  * 
  */
 #include "chassis_swerve.h"
-
-SystemTick_Fun Chassis_Base::get_systemTick = NULL;
 template <typename Type>
 Type ABS(Type a)
 {
@@ -23,6 +21,7 @@ Type ABS(Type a)
     else
         return a;
 }
+
 
 
 /**

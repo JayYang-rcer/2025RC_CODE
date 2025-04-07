@@ -29,6 +29,24 @@ void Omni_Chassis::Motor_Control(void)
 
 void Omni_Chassis::Velocity_Calculate(Robot_Twist_t cmd_vel)
 {
+    update_timeStamp();
+
+    //使用加速度控制底盘速度
+    if(cmd_vel.linear.x > 0 && cmd_vel.linear.x >= cmd_vel_last.linear.x)
+        cmd_vel.linear.x = cmd_vel_last.linear.x + accel_vel*dt;
+    else if(cmd_vel.linear.x < 0 && cmd_vel.linear.x <= cmd_vel_last.linear.x)
+        cmd_vel.linear.x = cmd_vel_last.linear.x - accel_vel*dt;
+    else
+    {}
+
+    if(cmd_vel.linear.y > 0 && cmd_vel.linear.y >= cmd_vel_last.linear.y)
+        cmd_vel.linear.y = cmd_vel_last.linear.y + accel_vel*dt;
+    else if(cmd_vel.linear.y < 0 && cmd_vel.linear.y <= cmd_vel_last.linear.y)
+        cmd_vel.linear.y = cmd_vel_last.linear.y - accel_vel*dt;
+    else
+    {}
+        cmd_vel_last = cmd_vel;
+
     if(wheel_num==4)
     {
         wheel[0].wheel_vel = (-cmd_vel.linear.y*COS45 + cmd_vel.linear.x*COS45 + cmd_vel.angular.z*Chassis_Radius) * ChassisVel_Trans_MotorRPM(Wheel_Radius, 19);
@@ -38,9 +56,9 @@ void Omni_Chassis::Velocity_Calculate(Robot_Twist_t cmd_vel)
     }
     else
     {
-        wheel[0].wheel_vel = (cmd_vel.linear.y*COS30 - cmd_vel.linear.x*SIN30 + cmd_vel.angular.z*Chassis_Radius) * ChassisVel_Trans_MotorRPM(Wheel_Radius, 19);
-        wheel[1].wheel_vel = (-cmd_vel.linear.y*SIN30 - cmd_vel.linear.x*COS30 + cmd_vel.angular.z*Chassis_Radius) * ChassisVel_Trans_MotorRPM(Wheel_Radius, 19);
-        wheel[2].wheel_vel = (cmd_vel.linear.x + cmd_vel.angular.z*Chassis_Radius) * ChassisVel_Trans_MotorRPM(Wheel_Radius, 19);
+        wheel[0].wheel_vel = ( cmd_vel.linear.x + cmd_vel.angular.z*Chassis_Radius) * ChassisVel_Trans_MotorRPM(Wheel_Radius, 19);
+        wheel[1].wheel_vel = (-cmd_vel.linear.y*SIN60 - cmd_vel.linear.x*COS60 + cmd_vel.angular.z*Chassis_Radius) * ChassisVel_Trans_MotorRPM(Wheel_Radius, 19);
+        wheel[2].wheel_vel = ( cmd_vel.linear.y*COS30 - cmd_vel.linear.x*SIN30  + cmd_vel.angular.z*Chassis_Radius) * ChassisVel_Trans_MotorRPM(Wheel_Radius, 19);
     }
 }
 

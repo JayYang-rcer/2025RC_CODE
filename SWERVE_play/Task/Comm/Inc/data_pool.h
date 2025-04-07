@@ -20,6 +20,10 @@
 #define Broadcast_Port_SIZE 2
 
 
+//can数据帧类型定义
+#define USE_CAN1_STDID 1  //使用标准ID
+#define USE_CAN2_STTID 0  //使用扩展ID
+
 //舵轮底盘加速度开启
 #define USE_VEL_ACCEL 1
 

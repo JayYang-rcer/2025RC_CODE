@@ -260,7 +260,7 @@ private:
 };
 
 
-class VESC : public Motor_Speed, public Tools
+class VESC : public Motor_Speed
 {
 public:
     VESC(uint8_t id) : Motor_Speed(id){} //括号中为VESC的CAN ID
@@ -364,7 +364,7 @@ private:
 };
 
 
-class DM_Driver : public Motor_Speed, public Tools
+class DM_Driver : public Motor_Speed
 {
 public:
     DM_Driver(uint8_t id) : Motor_Speed(id){} //括号中为VESC的CAN ID

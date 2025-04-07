@@ -52,6 +52,7 @@
         "typeinfo": "cpp",
         "drive_tim.c": "cpp",
         "data_pool.h": "c",
-        "drive_exti.h": "c"
+        "drive_exti.h": "c",
+        "random": "cpp"
     }
 }

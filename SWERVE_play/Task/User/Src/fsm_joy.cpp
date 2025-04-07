@@ -50,9 +50,13 @@ void Air_Joy_Task(void *pvParameters)
                 
                 twist.linear.x = (air_joy.LEFT_Y - 1500)/500.0 * 3;
                 twist.linear.y = (air_joy.LEFT_X - 1500)/500.0 * 3;
-                twist.angular.z = (air_joy.RIGHT_X - 1500)/500.0 * 4;
-                xQueueSend(Chassia_Port, &twist, 0);
+                twist.angular.z = (air_joy.RIGHT_X - 1500)/500.0 * 2;
             }
+			else
+			{
+				twist = {0};
+			}
+            xQueueSend(Chassia_Port, &twist, 0);
         }
         else
         {
