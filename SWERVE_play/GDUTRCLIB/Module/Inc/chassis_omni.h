@@ -20,7 +20,6 @@ typedef struct Wheel_t    //used for mecanum chassis and omni chassis
 }Wheel_t;
 
 
-
 class Omni_Chassis : public Chassis_Base
 {
 public:

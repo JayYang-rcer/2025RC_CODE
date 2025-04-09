@@ -40,7 +40,7 @@ void System_Resource_Init(void)
 void App_Init(void)
 {
     Set_PwmDuty(&htim10, TIM_CHANNEL_1, 0);
-    Chassis_Pid_Init();
+    PidParamInit();
     PidTimer::getMicroTick_regist(Get_SystemTimer);
     // motor_init();
 }

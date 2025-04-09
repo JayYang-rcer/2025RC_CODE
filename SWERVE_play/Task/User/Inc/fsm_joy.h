@@ -10,7 +10,6 @@ extern "C" {
 #endif
 void ROS_Cmd_Process(void); 
 void Air_Joy_Task(void *pvParameters);
-void Broadcast_Task(void *pvParameters);
 
 #ifdef __cplusplus
 }

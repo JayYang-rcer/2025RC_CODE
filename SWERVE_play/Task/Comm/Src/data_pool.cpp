@@ -7,6 +7,7 @@
  * 
  */
 #include "data_pool.h"
+#include "chassis_task.h"
 
 //定义队列
 QueueHandle_t Port;
@@ -32,6 +33,6 @@ void DataPool_Init(void)
     UART_TxPort = xQueueCreate(UART_TxPort_SIZE, sizeof(UART_TxMsg));
     Recieve_ROS_Port = xQueueCreate(Recieve_ROS_Port_SIZE, sizeof(UART_TxMsg));
     Send_ROS_Port = xQueueCreate(Send_ROS_Port_SIZE, sizeof(Robot_Twist_t));
-    Chassia_Port = xQueueCreate(Chassia_Port_SIZE, sizeof(Robot_Twist_t));
+    Chassia_Port = xQueueCreate(Chassia_Port_SIZE, sizeof(CONTROL_T));
     Broadcast_Port = xQueueCreate(Broadcast_Port_SIZE, sizeof(Robot_Status_t));
 }

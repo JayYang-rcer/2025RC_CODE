@@ -47,14 +47,6 @@ extern xQueueHandle Broadcast_Port;
 extern uint8_t Uart3_Rx_Buff[ROS_UART_SIZE];
 
 
-//机器人底盘运动模式
-typedef enum CHASSIS_MODE
-{
-	X_MOVE,
-	Y_MOVE,
-	NORMAL
-}CHASSIS_MODE;
-
 typedef enum CHASSIS_STATUS
 {
 	OFF,
@@ -77,7 +69,6 @@ typedef struct Robot_Twist_t
 		float z;
 	} angular;
 
-	CHASSIS_MODE chassis_mode;
 }Robot_Twist_t;
 
 

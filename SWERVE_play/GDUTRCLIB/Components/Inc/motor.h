@@ -471,6 +471,7 @@ void Motor_SendMsgs(CAN_HandleTypeDef *hcan, Motor_Type (&motor)[N])
 {
     CAN_TxMsg CAN_TxMsg;
 
+
     for(int i=0; i<N; i++)
     {
         motor[i].CanMsg_Process(CAN_TxMsg);

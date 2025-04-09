@@ -16,6 +16,7 @@ class PlannerBase
 public:
     PlannerBase(float accel_range, float decel_range, float vel_max, float vel_start, float deadzone){}; 
     virtual float Plan(float pos_start, float pos_end, float real_angle) {};
+    virtual bool GetArrivedFlag() { return arrive_flag; }
 protected:
     virtual void Reset(){};
 protected:
@@ -42,6 +43,7 @@ public:
         this->deadzone = deadzone;
     }
     virtual float Plan(float pos_start, float pos_end, float real_angle) override;
+    virtual bool GetArrivedFlag() { return this->arrive_flag; }
 protected:
     virtual void Reset() override { parameter_init = false; arrive_flag = false;};
 private:

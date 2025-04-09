@@ -15,52 +15,71 @@
 
 void Air_Joy_Task(void *pvParameters)
 {
+    static CONTROL_T ctrl;
     for(;;)
     {
-		Robot_Twist_t twist;
-        if(air_joy.LEFT_X>1400&&air_joy.LEFT_X<1600)
+        //遥杆消抖
+        if(air_joy.LEFT_X>1450&&air_joy.LEFT_X<1550)
             air_joy.LEFT_X = 1500;
-        if(air_joy.LEFT_Y>1400&&air_joy.LEFT_Y<1600)
+        if(air_joy.LEFT_Y>1450&&air_joy.LEFT_Y<1550)
             air_joy.LEFT_Y = 1500;
-        if(air_joy.RIGHT_X>1400&&air_joy.RIGHT_X<1600)
+        if(air_joy.RIGHT_X>1450&&air_joy.RIGHT_X<1550)
             air_joy.RIGHT_X = 1500;
-        if(air_joy.RIGHT_Y>1400&&air_joy.RIGHT_Y<1600)  
+        if(air_joy.RIGHT_Y>1450&&air_joy.RIGHT_Y<1550)  
             air_joy.RIGHT_Y = 1500;
 
+        //遥控器启动判断
         if(air_joy.LEFT_X!=0||air_joy.LEFT_Y!=0||air_joy.RIGHT_X!=0||air_joy.RIGHT_Y!=0)
         {
+            //底盘控制命令
             if(air_joy.SWA>1950&&air_joy.SWA<2050)
-            {
-                if(air_joy.SWC>950&&air_joy.SWC<1050)
+            {                
+                ctrl.twist.linear.x = (air_joy.LEFT_Y - 1500)/500.0 * 3;
+                ctrl.twist.linear.y = (air_joy.LEFT_X - 1500)/500.0 * 3;
+                ctrl.twist.angular.z = (air_joy.RIGHT_X - 1500)/500.0 * 2;
+                ctrl.twist.angular.x = air_joy.RIGHT_Y;
+
+                if(_tool_Abs(air_joy.SWB - 1500)<50)    //手动俯仰，俯仰时禁止底盘运动
                 {
-                    twist.chassis_mode = NORMAL;
+                    ctrl.pitch_ctrl = PITCH_HAND;
+                    ctrl.chassis_ctrl = CHASSIS_OFF;
                 }
-                else if(air_joy.SWC>1450&&air_joy.SWC<1550)
+                else    
                 {
-                    twist.chassis_mode = X_MOVE;
+                    ctrl.pitch_ctrl = PITCH_AUTO;
+                    ctrl.chassis_ctrl = CHASSIS_ON; 
                 }
-                else if(air_joy.SWC>1950&&air_joy.SWC<2050)
+
+                if(_tool_Abs(air_joy.SWC-1500)<50)  //开启摩擦轮
                 {
-                    twist.chassis_mode = Y_MOVE;
+                    ctrl.friction_ctrl = FRICTION_ON;
+
+                    if(_tool_Abs(air_joy.SWD-2000)<50)
+                    {
+                        ctrl.shoot_ctrl = SHOOT_ON;     //启动推杆，射球
+                    }
+                    else
+                    {
+                        ctrl.shoot_ctrl = SHOOT_OFF;    //推杆复位
+                    }
                 }
                 else
                 {
-                    twist.chassis_mode = NORMAL;
+                    ctrl.friction_ctrl = FRICTION_OFF;
                 }
-                
-                twist.linear.x = (air_joy.LEFT_Y - 1500)/500.0 * 3;
-                twist.linear.y = (air_joy.LEFT_X - 1500)/500.0 * 3;
-                twist.angular.z = (air_joy.RIGHT_X - 1500)/500.0 * 2;
             }
 			else
 			{
-				twist = {0};
+                ctrl.chassis_ctrl = CHASSIS_OFF;
+                ctrl.friction_ctrl = FRICTION_OFF;
+                ctrl.pitch_ctrl = PITCH_RESET;
+                ctrl.shoot_ctrl = SHOOT_OFF;
 			}
-            xQueueSend(Chassia_Port, &twist, 0);
+            xQueueSend(Chassia_Port, &ctrl, 0);
         }
         else
         {
-            twist = {0};
+            ctrl.twist = {0};
         }
 
         osDelay(1);

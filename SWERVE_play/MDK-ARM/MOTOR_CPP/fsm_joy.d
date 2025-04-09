@@ -84,3 +84,5 @@ motor_cpp\fsm_joy.o: ../Task/Comm/Inc/service_config.h
 motor_cpp\fsm_joy.o: ../Task/Comm/Inc/user_debug.h
 motor_cpp\fsm_joy.o: ../GDUTRCLIB/Components/Inc/motor.h
 motor_cpp\fsm_joy.o: ../GDUTRCLIB/Module/Inc/chassis_omni.h
+motor_cpp\fsm_joy.o: ../GDUTRCLIB/Module/Inc/launcher.h
+motor_cpp\fsm_joy.o: ../GDUTRCLIB/Components/Inc/speed_plan.h

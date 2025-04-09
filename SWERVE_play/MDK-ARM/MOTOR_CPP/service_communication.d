@@ -85,3 +85,5 @@ motor_cpp\service_communication.o: ../GDUTRCLIB/Module/Inc/chassis_swerve.h
 motor_cpp\service_communication.o: ../GDUTRCLIB/Module/Inc/chassis_base.h
 motor_cpp\service_communication.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\math.h
 motor_cpp\service_communication.o: ../GDUTRCLIB/Module/Inc/chassis_omni.h
+motor_cpp\service_communication.o: ../GDUTRCLIB/Module/Inc/launcher.h
+motor_cpp\service_communication.o: ../GDUTRCLIB/Components/Inc/speed_plan.h

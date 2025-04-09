@@ -39,7 +39,6 @@ public:
         this->accel_vel = accel_vel;
         this->Chassis_Radius = Chassis_Radius;
         this->wheel_num = wheel_num;
-        this->cmd_vel_.chassis_mode = NORMAL;
         swerve[0].num = 1;
         swerve[1].num = 2;
         swerve[2].num = 3;
