@@ -1,12 +1,10 @@
-![image](https://github.com/user-attachments/assets/3c6288e4-388b-4f0b-9f34-3da2cdb05776)# 2025RC_CODE
 2025年RC挑战赛老东西代码
 
 ## 代码框架
 
 代码的基本架构使用cpp进行封装，其中包含电机类和各种工具的类封装
 
-![image](https://github.com/user-attachments/assets/b2526e0f-2a4a-4c25-8ec4-b28eec6cc24e)
-
+![image](https://github.com/user-attachments/assets/3f265dbb-dea9-4834-91cd-4b6c1cf02d6b)
 
 ## 代码管理建议
 
