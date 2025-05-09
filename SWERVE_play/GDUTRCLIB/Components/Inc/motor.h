@@ -52,6 +52,15 @@ typedef enum VESC_MODE
 }VESC_MODE;
 
 
+typedef enum MOTOR_FLAG
+{
+    RM_MOTOR,
+    VESC_MOTOR,
+    DM_MOTOR,
+    NONE_MOTOR,
+}MOTOR_FLAG;
+
+
 template <typename T>
 void motor_constraint(T *val, T min, T max)
 {
@@ -72,7 +81,7 @@ public:
     Motor_Base(uint8_t id) : ID(id){}
     virtual ~Motor_Base(){}
     const uint8_t ID = 0;
-
+	virtual MOTOR_FLAG GET_MOTOR_FLAG() const { return NONE_MOTOR; }
     virtual void update(uint8_t can_rx_data[])=0;
     virtual bool check_id(uint32_t StdID) const { return StdID == this->receive_id_init() + (uint8_t)ID; }
     float get_angle() const { return angle; }
@@ -117,6 +126,7 @@ private:
 };
 
 
+
 class Motor_Speed : public Motor_Base
 {
 public:
@@ -138,7 +148,7 @@ class RM_Common : public Motor_Speed
 {
 public:
     RM_Common(uint8_t id) : Motor_Speed(id){}
-    
+    virtual MOTOR_FLAG GET_MOTOR_FLAG() const { return RM_MOTOR; }
 protected:
     virtual ~RM_Common(){}
     virtual uint32_t receive_id_init() const { return 0x200; }
@@ -263,6 +273,7 @@ private:
 class VESC : public Motor_Speed
 {
 public:
+    virtual MOTOR_FLAG GET_MOTOR_FLAG() const { return VESC_MOTOR; }
     VESC(uint8_t id) : Motor_Speed(id){} //括号中为VESC的CAN ID
     virtual ~VESC(){}
     VESC_MODE Mode;
@@ -369,6 +380,7 @@ class DM_Driver : public Motor_Speed
 public:
     DM_Driver(uint8_t id) : Motor_Speed(id){} //括号中为VESC的CAN ID
     virtual ~DM_Driver(){}
+    virtual MOTOR_FLAG GET_MOTOR_FLAG() const { return DM_MOTOR; }
     virtual void update(uint8_t can_rx_data[]) override
     {
         if(can_rx_data[0] == this->ID)
@@ -469,18 +481,68 @@ private:
 template <class Motor_Type, int N>
 void Motor_SendMsgs(CAN_HandleTypeDef *hcan, Motor_Type (&motor)[N])
 {
-    CAN_TxMsg CAN_TxMsg;
+    //CAN_TxMsg CAN_TxMsg;
+	//
+    //for(int i=0; i<N; i++)
+    //{
+    //    motor[i].CanMsg_Process(CAN_TxMsg);
+    //}
+	//
+    //if(hcan == &hcan1)
+    //    xQueueSend(CAN1_TxPort, &CAN_TxMsg, portMAX_DELAY);
+    //else if(hcan == &hcan2)
+    //    xQueueSend(CAN2_TxPort, &CAN_TxMsg, portMAX_DELAY);
 
 
+    CAN_TxMsg can_txmsg_high, can_txmsg_low;
+    bool low = false;
+    bool high = false;
     for(int i=0; i<N; i++)
     {
-        motor[i].CanMsg_Process(CAN_TxMsg);
+        if(motor[i].GET_MOTOR_FLAG() == RM_MOTOR)
+        {
+            if(motor[i].ID<=4 && motor[i].ID>0)
+            {
+                motor[i].CanMsg_Process(can_txmsg_low);
+                low = true;
+            }
+            else if(motor[i].ID<=8 && motor[i].ID>4)
+            {
+                motor[i].CanMsg_Process(can_txmsg_high);
+                high = true;
+            }
+        }
+
+        if(motor[i].GET_MOTOR_FLAG() == VESC_MOTOR || motor[i].GET_MOTOR_FLAG() == DM_MOTOR)
+        {
+            if(motor[i].ID<=4 && motor[i].ID>0)
+            {
+                motor[i].CanMsg_Process(can_txmsg_high);
+                high = true;
+            }
+            else if(motor[i].ID<=8 && motor[i].ID>4)
+            {
+                motor[i].CanMsg_Process(can_txmsg_low);
+                low = true;
+            }
+        }
     }
+    
 
     if(hcan == &hcan1)
-        xQueueSend(CAN1_TxPort, &CAN_TxMsg, portMAX_DELAY);
+    {
+        if(low)
+            xQueueSend(CAN1_TxPort, &can_txmsg_low, portMAX_DELAY);
+        if(high)
+            xQueueSend(CAN1_TxPort, &can_txmsg_high, portMAX_DELAY);
+    }
     else if(hcan == &hcan2)
-        xQueueSend(CAN2_TxPort, &CAN_TxMsg, portMAX_DELAY);
+    {
+        if(low)
+            xQueueSend(CAN2_TxPort, &can_txmsg_low, portMAX_DELAY);
+        if(high)
+            xQueueSend(CAN2_TxPort, &can_txmsg_high, portMAX_DELAY);
+    }
 }
 
 
