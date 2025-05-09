@@ -481,19 +481,6 @@ private:
 template <class Motor_Type, int N>
 void Motor_SendMsgs(CAN_HandleTypeDef *hcan, Motor_Type (&motor)[N])
 {
-    //CAN_TxMsg CAN_TxMsg;
-	//
-    //for(int i=0; i<N; i++)
-    //{
-    //    motor[i].CanMsg_Process(CAN_TxMsg);
-    //}
-	//
-    //if(hcan == &hcan1)
-    //    xQueueSend(CAN1_TxPort, &CAN_TxMsg, portMAX_DELAY);
-    //else if(hcan == &hcan2)
-    //    xQueueSend(CAN2_TxPort, &CAN_TxMsg, portMAX_DELAY);
-
-
     CAN_TxMsg can_txmsg_high, can_txmsg_low;
     bool low = false;
     bool high = false;
