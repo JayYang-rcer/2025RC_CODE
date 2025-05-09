@@ -1,11 +1,12 @@
-# 2025RC_CODE
+![image](https://github.com/user-attachments/assets/3c6288e4-388b-4f0b-9f34-3da2cdb05776)# 2025RC_CODE
 2025年RC挑战赛老东西代码
 
 ## 代码框架
 
 代码的基本架构使用cpp进行封装，其中包含电机类和各种工具的类封装
 
-![image-20250510030939532](C:\Users\28076\AppData\Roaming\Typora\typora-user-images\image-20250510030939532.png)
+![image](https://github.com/user-attachments/assets/b2526e0f-2a4a-4c25-8ec4-b28eec6cc24e)
+
 
 ## 代码管理建议
 
