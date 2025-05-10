@@ -497,7 +497,7 @@ private:
 template <class Motor_Type, int N>
 void Motor_SendMsgs(CAN_HandleTypeDef *hcan, Motor_Type (&motor)[N])
 {
-    CAN_TxMsg can_txmsg_high, can_txmsg_low;
+    CAN_TxMsg can_txmsg_high={0}, can_txmsg_low={0};
     bool low = false;
     bool high = false;
     for (int i = 0; i < N; i++)
