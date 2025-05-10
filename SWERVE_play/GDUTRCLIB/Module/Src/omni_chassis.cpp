@@ -14,6 +14,8 @@
 void Omni_Chassis::Control(Robot_Twist_t cmd_vel)
 {
     Velocity_Calculate(cmd_vel);
+    
+    //电机接口调用
     for(int i=0; i<wheel_num; i++)
     {
         PID_Wheel[i].current = WheelMotor[i].get_speed();
@@ -47,6 +49,7 @@ void Omni_Chassis::Velocity_Calculate(Robot_Twist_t cmd_vel)
     {}
         cmd_vel_last = cmd_vel;
 
+    //三轮或者四轮
     if(wheel_num==4)
     {
         wheel[0].wheel_vel = (-cmd_vel.linear.y*COS45 + cmd_vel.linear.x*COS45 + cmd_vel.angular.z*Chassis_Radius) * ChassisVel_Trans_MotorRPM(Wheel_Radius, 19);
@@ -63,13 +66,18 @@ void Omni_Chassis::Velocity_Calculate(Robot_Twist_t cmd_vel)
 }
 
 
-
+/**
+ * @brief PID初始化
+ */
 bool Omni_Chassis::Pid_Param_Init(int num, float Kp, float Ki, float Kd, float Integral_Max, float OUT_Max, float DeadZone)
 {
     PID_Wheel[num].PID_Param_Init(Kp, Ki, Kd, OUT_Max, Integral_Max,DeadZone);
     return true;
 }
 
+/**
+ * @brief PID初始化
+ */
 bool Omni_Chassis::Pid_Mode_Init(int num, float LowPass_error, float LowPass_d_err, bool D_of_Current, bool Imcreatement_of_Out)
 {
     PID_Wheel[num].PID_Mode_Init(LowPass_error, LowPass_d_err, D_of_Current, Imcreatement_of_Out);

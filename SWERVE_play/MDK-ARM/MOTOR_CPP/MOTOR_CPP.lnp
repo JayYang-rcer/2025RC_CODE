@@ -50,7 +50,6 @@
 "motor_cpp\air_joy.o"
 "motor_cpp\omni_chassis.o"
 "motor_cpp\chassis_swerve.o"
-"motor_cpp\chassis_base.o"
 "motor_cpp\launcher.o"
 "motor_cpp\data_pool.o"
 "motor_cpp\service_communication.o"

@@ -1,3 +1,11 @@
+/**
+ * @file speed_plan.cpp
+ * @author Yang JianYi
+ * @brief 速度规划算法文件，只封装使用了梯形速度规划算法，后续如需更新可以添加其他算法
+ * @version 0.1
+ * @date 2024-05-16
+ */
+
 #include "speed_plan.h"
 #include "stdlib.h"
 #include "math.h"

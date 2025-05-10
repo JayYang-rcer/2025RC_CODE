@@ -3,16 +3,20 @@
  * @author Yang Jianyi
  * @brief 用于调试的任务
  * @version 0.1
- * 
+ * @date 2024-04-18
  */
 #include "user_debug.h"
-#include "serial_tool.h"
 #include "chassis_omni.h"
 
 Motor_C620 M3508(4);
 VESC MD4219(103);
 DM_Driver DM43(2);
 
+
+
+/**
+ * @brief debug函数，在做一些模块测试的时候使用。可以将不相干的任务在freertos.c中注释其初始化，然后在这个任务中进行调试
+ */
 void User_Debug_Task(void *pvParameters)
 {
 #if USE_DEBUG_TASK

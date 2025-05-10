@@ -1,3 +1,11 @@
+/**
+ * @file pid.h
+ * @author Yang JianYi
+ * @brief PID控制器类，使用PID控制器进行控制。可以设置PID参数、积分分离阈值、死区等参数。
+ * @version 0.1
+ * @date 2024-05-16
+ */
+
 #pragma once
 #ifdef __cplusplus
 
@@ -9,6 +17,10 @@
 
 typedef uint32_t (*SystemTick_Fun)(void);
 
+
+/**
+ * @brief 定时器类，用于获取系统时间以及时间间隔
+ */
 class PidTimer
 {
 public:

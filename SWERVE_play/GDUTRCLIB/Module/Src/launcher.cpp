@@ -1,3 +1,14 @@
+/**
+ * @file launcher.cpp
+ * @author Yang JianYi
+ * @brief 射球机构文件，编写了射球机构的控制函数，包括俯仰角度控制、射球控制、摩擦轮控制等
+ * @version 0.1
+ * @date 2025-04-16
+ * 
+ * @copyright Copyright (c) 2025
+ * 
+ */
+
 #include "launcher.h"
 
 

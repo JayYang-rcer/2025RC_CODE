@@ -11,6 +11,10 @@ extern "C" {
 }
 #endif 
 
+
+/**
+ * @brief 速度规划算法基类
+ */
 class PlannerBase
 {
 public:
@@ -31,16 +35,20 @@ protected:
     bool arrive_flag = false; /*!< 到达目标位置标志 */
 };
 
+
+/**
+ * @brief 梯形速度规划
+ */
 class TrapePlanner : PlannerBase
 {
 public:
     TrapePlanner(float accel_range, float decel_range, float vel_max, float vel_start, float deadzone) : PlannerBase(accel_range, decel_range, vel_max, vel_start, deadzone)
     {
-        this->accel_range = accel_range;
-        this->decel_range = decel_range;
-        this->vel_max = vel_max;
-        this->vel_start = vel_start;
-        this->deadzone = deadzone;
+        this->accel_range = accel_range;    /*!< 加速路程比例 */
+        this->decel_range = decel_range;    /*!< 减速路程比例 */
+        this->vel_max = vel_max;            
+        this->vel_start = vel_start;        /*!< 启动速度 */
+        this->deadzone = deadzone;          /*!< 位置死区 */
     }
     virtual float Plan(float pos_start, float pos_end, float real_angle) override;
     virtual bool GetArrivedFlag() { return this->arrive_flag; }

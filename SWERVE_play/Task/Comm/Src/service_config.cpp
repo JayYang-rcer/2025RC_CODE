@@ -11,6 +11,9 @@
 
 #define USE_SWERVE_CHASSIS 0 
 
+/**
+ * @brief 系统资源初始化，将使用到的各种模块以及协议的初始化函数都丢在这里
+ */
 void System_Resource_Init(void)
 {
     DataPool_Init();
@@ -45,8 +48,8 @@ void App_Init(void)
     // motor_init();
 }
 
-void motor_init(void)
-{
-    DM43.Motor_Status = CMD_MOTOR_ENABLE;
-    Motor_SendMsgs(&hcan1, DM43);
-}
+// void motor_init(void)
+// {
+//     DM43.Motor_Status = CMD_MOTOR_ENABLE;
+//     Motor_SendMsgs(&hcan1, DM43);
+// }

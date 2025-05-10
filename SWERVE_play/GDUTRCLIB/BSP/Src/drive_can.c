@@ -25,7 +25,7 @@ static void (*pCAN2_RxCpltCallback)(CAN_RxBuffer *);
  * @param Id 
  * @param MaskId ID掩码 
  */
-void CAN_Filter_Init(CAN_HandleTypeDef * hcan, uint8_t object_para,uint32_t Id,uint32_t MaskId) 
+void CAN_Filter_Init(CAN_HandleTypeDef * hcan, uint8_t object_para, uint32_t Id,uint32_t MaskId)
 {
     CAN_FilterTypeDef  CAN_FilterInitStructure;
 	/* Check the parameters */
@@ -90,7 +90,7 @@ uint8_t CAN_Init(CAN_HandleTypeDef* hcan, void (*pFunc)(CAN_RxBuffer*))
 		/* Start Error */
 		Error_Handler();
 	}
-  
+
 	if(hcan->Instance == CAN1)
 	{
 		pCAN1_RxCpltCallback = pFunc;

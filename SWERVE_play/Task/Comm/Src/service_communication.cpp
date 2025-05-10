@@ -12,10 +12,13 @@
 #include "service_communication.h"
 #include "pid.h"
 #include "motor.h"
-#include "serial_tool.h"
 #include "service_config.h"
 #include "chassis_task.h"
 
+/**
+ * @brief CAN1报文发送任务，使用队列接受CAN的Msg结构体并进行发送
+ * @param USE_CAN1_STDID 决定使用标准帧还是拓展帧数
+ */
 void CAN1_Send_Task(void *pvParameters)
 {
     CAN_TxMsg CAN_TxMsg;
@@ -26,9 +29,9 @@ void CAN1_Send_Task(void *pvParameters)
         if(xQueueReceive(CAN1_TxPort, &CAN_TxMsg, portMAX_DELAY) == pdTRUE)
         {
             do{
-                free_can_mailbox = HAL_CAN_GetTxMailboxesFreeLevel(&hcan1);
+                free_can_mailbox = HAL_CAN_GetTxMailboxesFreeLevel(&hcan1); //保证邮箱不满
             }while(free_can_mailbox == 0);
-#if USE_CAN1_STDID
+#if USE_CAN1_STDID  
             comm_can_transmit_stdid(&hcan1, CAN_TxMsg.id, CAN_TxMsg.data, CAN_TxMsg.len);
 #else
             comm_can_transmit_extid(&hcan1, CAN_TxMsg.id, CAN_TxMsg.data, CAN_TxMsg.len);
@@ -38,6 +41,10 @@ void CAN1_Send_Task(void *pvParameters)
 }
 
 
+/**
+ * @brief CAN2报文发送任务，使用队列接受CAN的Msg结构体并进行发送
+ * @param USE_CAN1_STDID 决定使用标准帧还是拓展帧数
+ */
 void CAN2_Send_Task(void *pvParameters) 
 {
     CAN_TxMsg CAN_TxMsg;
@@ -60,6 +67,9 @@ void CAN2_Send_Task(void *pvParameters)
 }
 
 
+/**
+ * @brief UART发送任务，使用队列接受UART的Msg结构体并进行发送
+ */
 void UART_Send_Task(void *pvParameters)
 {
     UART_TxMsg UART_TxMsg; 
@@ -74,7 +84,6 @@ void UART_Send_Task(void *pvParameters)
 }
 
 
-int can_flag=0;
 /**
 * @brief  Callback function in CAN Interrupt
 * @param  None.
@@ -120,6 +129,11 @@ void CAN1_RxCallBack(CAN_RxBuffer *RxBuffer)
 }
 
 
+/**
+* @brief  Callback function in CAN Interrupt
+* @param  None.
+* @return None.
+*/
 void CAN2_RxCallBack(CAN_RxBuffer *RxBuffer)
 {
 #if USE_CAN2_STDID

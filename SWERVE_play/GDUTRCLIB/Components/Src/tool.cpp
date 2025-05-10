@@ -1,3 +1,13 @@
+/**
+ * @file tool.cpp
+ * @author Yang JianYi (2807643517@qq.com)
+ * @brief 工具函数文件，包括数据转换、数据填充等
+ * @version 0.1
+ * @date 2024-05-16
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+ */
 #include "tool.h"
 
 
